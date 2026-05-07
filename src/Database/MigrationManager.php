@@ -43,21 +43,14 @@ final class MigrationManager
                 continue;
             }
 
-            $this->pdo->beginTransaction();
-            try {
-                $migration->up($this->pdo);
-                $stmt = $this->pdo->prepare(
-                    sprintf(
-                        'INSERT INTO %s (version, executed_at) VALUES (:version, NOW())',
-                        self::MIGRATIONS_TABLE
-                    )
-                );
-                $stmt->execute(['version' => $version]);
-                $this->pdo->commit();
-            } catch (\Throwable $e) {
-                $this->pdo->rollBack();
-                throw $e;
-            }
+            $migration->up($this->pdo);
+            $stmt = $this->pdo->prepare(
+                sprintf(
+                    'INSERT INTO %s (version, executed_at) VALUES (:version, NOW())',
+                    self::MIGRATIONS_TABLE
+                )
+            );
+            $stmt->execute(['version' => $version]);
 
             $applied[] = $version;
         }
