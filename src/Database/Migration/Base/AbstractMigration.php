@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App\Database\Migration;
+namespace App\Database\Migration\Base;
 
+use App\Contracts\Database\MigrationInterface;
 use PDO;
 
 abstract class AbstractMigration implements MigrationInterface

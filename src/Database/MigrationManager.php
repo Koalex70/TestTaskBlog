@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Database;
 
-use App\Config\Config;
-use App\Database\Migration\MigrationInterface;
+use App\Contracts\Database\MigrationInterface;
+use App\Database\Sql\MigrationSqlOption;
 use PDO;
 
 final class MigrationManager
@@ -78,20 +78,15 @@ final class MigrationManager
 
     public function ensureMigrationsTable(): void
     {
-        $databaseConfig = Config::namespace('database');
-        $charset = $databaseConfig['charset'] ?? 'utf8mb4';
-        $collation = $databaseConfig['collation'] ?? 'utf8mb4_unicode_ci';
-
         $this->pdo->exec(
             sprintf(
                 'CREATE TABLE IF NOT EXISTS %s (
                 id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
                 version VARCHAR(255) NOT NULL UNIQUE,
                 executed_at DATETIME NOT NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=%s COLLATE=%s',
+            ) %s',
                 self::MIGRATIONS_TABLE,
-                $charset,
-                $collation
+                MigrationSqlOption::tableOptions()
             )
         );
     }

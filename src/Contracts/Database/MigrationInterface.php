@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Database\Migration;
+namespace App\Contracts\Database;
 
 use PDO;
 
