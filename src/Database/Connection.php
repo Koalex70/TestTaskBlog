@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Database;
 
+use App\Config\Config;
 use PDO;
-use RuntimeException;
 
 final class Connection
 {
@@ -17,11 +17,7 @@ final class Connection
             return self::$pdo;
         }
 
-        $config = require dirname(__DIR__, 2) . '/config/database.php';
-
-        if (!is_array($config)) {
-            throw new RuntimeException('Database config must return an array.');
-        }
+        $config = Config::namespace('database');
 
         $dsn = sprintf(
             '%s:host=%s;port=%d;dbname=%s;charset=%s',
