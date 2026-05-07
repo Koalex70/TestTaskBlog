@@ -1,0 +1,50 @@
+# OS / Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment / secrets
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+logs/
+
+# PHP / Composer
+vendor/
+composer.phar
+
+# PHPUnit
+.phpunit.result.cache
+coverage/
+
+# Build / cache
+tmp/
+cache/
+storage/
+
+# Smarty compiled templates and cache
+templates_c/
+smarty/cache/
+
+# Node (if SCSS/tooling is used)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Docker overrides and local volumes
+docker-compose.override.yml
+docker/mysql/data/
+
+# Archives / backups
+*.zip
+*.tar
+*.tar.gz
+*.bak
