@@ -14,6 +14,11 @@ final class Router
         $this->routes[$this->routeKey('GET', $path)] = $handler;
     }
 
+    public function post(string $path, callable $handler): void
+    {
+        $this->routes[$this->routeKey('POST', $path)] = $handler;
+    }
+
     public function dispatch(string $method, string $path): Response
     {
         $key = $this->routeKey($method, $path);
