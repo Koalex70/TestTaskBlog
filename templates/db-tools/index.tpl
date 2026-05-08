@@ -10,6 +10,7 @@
 </head>
 <body
     class="db-tools-page"
+    data-app-env="{$appEnv|escape:'html'}"
     data-csrf-token="{$csrfToken|escape:'html'}"
     data-url-migrate="/db-tools/migrate"
     data-url-seed="/db-tools/seed"
