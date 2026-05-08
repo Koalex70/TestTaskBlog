@@ -8,6 +8,7 @@ use App\Database\Connection;
 use App\Database\Migration\Version000CreateCategoriesTable;
 use App\Database\Migration\Version100CreatePostsTable;
 use App\Database\Migration\Version200CreatePostCategoryTable;
+use App\Database\Migration\Version300AddSlugToCategoriesAndPostsTable;
 use App\Database\MigrationManager;
 
 final class MigrationModel
@@ -23,6 +24,7 @@ final class MigrationModel
                 new Version000CreateCategoriesTable(),
                 new Version100CreatePostsTable(),
                 new Version200CreatePostCategoryTable(),
+                new Version300AddSlugToCategoriesAndPostsTable(),
             ]
         );
 

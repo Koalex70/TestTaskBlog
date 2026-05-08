@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Model\DbTools;
 
 use App\Database\Connection;
+use App\Support\Slugger;
 use Faker\Factory;
 use PDO;
 
@@ -22,21 +23,23 @@ final class SeedModel
         $pdo->beginTransaction();
         try {
             $categoryStmt = $pdo->prepare(
-                'INSERT INTO categories (name, description, created_at, updated_at)
-                 VALUES (:name, :description, NOW(), NOW())'
+                'INSERT INTO categories (name, slug, description, created_at, updated_at)
+                 VALUES (:name, :slug, :description, NOW(), NOW())'
             );
 
             for ($i = 0; $i < $categoriesCount; $i++) {
+                $name = ucfirst($faker->unique()->words(2, true));
                 $categoryStmt->execute([
-                    'name' => ucfirst($faker->unique()->words(2, true)),
+                    'name' => $name,
+                    'slug' => Slugger::slugify($name) . '-' . strtolower($faker->unique()->lexify('????')),
                     'description' => $faker->sentence(12),
                 ]);
                 $categories[] = (int) $pdo->lastInsertId();
             }
 
             $postStmt = $pdo->prepare(
-                'INSERT INTO posts (image, title, description, content, views_count, created_at, updated_at, published_at)
-                 VALUES (:image, :title, :description, :content, :views_count, NOW(), NOW(), NOW())'
+                'INSERT INTO posts (image, title, slug, description, content, views_count, created_at, updated_at, published_at)
+                 VALUES (:image, :title, :slug, :description, :content, :views_count, NOW(), NOW(), NOW())'
             );
             $relationStmt = $pdo->prepare(
                 'INSERT INTO post_category (post_id, category_id) VALUES (:post_id, :category_id)'
@@ -45,9 +48,11 @@ final class SeedModel
             foreach ($categories as $categoryId) {
                 $postsForCategory = 2;
                 for ($j = 0; $j < $postsForCategory; $j++) {
+                    $title = ucfirst($faker->sentence(5));
                     $postStmt->execute([
                         'image' => 'https://picsum.photos/seed/' . $faker->uuid() . '/640/360',
-                        'title' => ucfirst($faker->sentence(5)),
+                        'title' => $title,
+                        'slug' => Slugger::slugify($title) . '-' . strtolower($faker->unique()->lexify('??????')),
                         'description' => $faker->sentence(14),
                         'content' => $faker->paragraphs(4, true),
                         'views_count' => $faker->numberBetween(0, 1000),
