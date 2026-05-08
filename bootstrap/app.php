@@ -14,3 +14,7 @@ if (is_file($envPath)) {
 }
 
 date_default_timezone_set($_ENV['APP_TIMEZONE'] ?? 'UTC');
+
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
