@@ -4,19 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DB Tools</title>
+    <link rel="stylesheet" href="/assets/css/common.min.css">
     <link rel="stylesheet" href="/assets/css/db-tools.min.css">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="/assets/js/db-tools.js" defer></script>
 </head>
 <body
-    class="db-tools-page"
+    class="app-page db-tools-page"
     data-app-env="{$appEnv|escape:'html'}"
     data-csrf-token="{$csrfToken|escape:'html'}"
     data-url-migrate="/db-tools/migrate"
     data-url-seed="/db-tools/seed"
     data-url-clear="/db-tools/clear"
 >
-<main class="db-tools-container">
+<main class="app-container db-tools-container">
 <h1 class="db-tools-title">DB Tools</h1>
 <p class="db-tools-env">Environment: <strong>{$appEnv|escape}</strong></p>
 
