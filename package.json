@@ -7,8 +7,8 @@
     "test": "tests"
   },
   "scripts": {
-    "build:css": "sass --style=compressed public/assets/scss/common.scss public/assets/css/common.min.css && sass --style=compressed public/assets/scss/db-tools.scss public/assets/css/db-tools.min.css && sass --style=compressed public/assets/scss/errors.scss public/assets/css/errors.min.css",
-    "watch:css": "sass --watch --style=compressed public/assets/scss/common.scss:public/assets/css/common.min.css public/assets/scss/db-tools.scss:public/assets/css/db-tools.min.css public/assets/scss/errors.scss:public/assets/css/errors.min.css"
+    "build:css": "sass --style=compressed public/assets/scss/common.scss public/assets/css/common.min.css && sass --style=compressed public/assets/scss/home.scss public/assets/css/home.min.css && sass --style=compressed public/assets/scss/db-tools.scss public/assets/css/db-tools.min.css && sass --style=compressed public/assets/scss/errors.scss public/assets/css/errors.min.css",
+    "watch:css": "sass --watch --style=compressed public/assets/scss/common.scss:public/assets/css/common.min.css public/assets/scss/home.scss:public/assets/css/home.min.css public/assets/scss/db-tools.scss:public/assets/css/db-tools.min.css public/assets/scss/errors.scss:public/assets/css/errors.min.css"
   },
   "repository": {
     "type": "git",
