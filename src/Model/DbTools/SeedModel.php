@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Model\DbTools;
 
+use App\Config\Config;
 use App\Database\Connection;
 use App\Support\Slugger;
 use Faker\Factory;
@@ -11,10 +12,13 @@ use PDO;
 
 final class SeedModel
 {
-    public function runSeed(int $categoriesCount = 5): array
+    public function runSeed(?int $categoriesCount = null): array
     {
+        $seedConfig = Config::namespace('seed');
+        $categoriesCount ??= (int) ($seedConfig['categories_count'] ?? 5);
+
         $pdo = Connection::get();
-        $faker = Factory::create('en_US');
+        $faker = Factory::create((string) ($seedConfig['locale'] ?? 'en_US'));
 
         $categories = [];
         $postsInserted = 0;
@@ -28,11 +32,13 @@ final class SeedModel
             );
 
             for ($i = 0; $i < $categoriesCount; $i++) {
-                $name = ucfirst($faker->unique()->words(2, true));
+                $name = ucfirst($faker->unique()->words((int) ($seedConfig['category_name_words'] ?? 2), true));
                 $categoryStmt->execute([
                     'name' => $name,
-                    'slug' => Slugger::slugify($name) . '-' . strtolower($faker->unique()->lexify('????')),
-                    'description' => $faker->sentence(12),
+                    'slug' => Slugger::slugify($name) . '-' . strtolower(
+                        $faker->unique()->lexify((string) ($seedConfig['category_slug_suffix_mask'] ?? '????'))
+                    ),
+                    'description' => $faker->sentence((int) ($seedConfig['category_description_words'] ?? 12)),
                 ]);
                 $categories[] = (int) $pdo->lastInsertId();
             }
@@ -46,16 +52,26 @@ final class SeedModel
             );
 
             foreach ($categories as $categoryId) {
-                $postsForCategory = 2;
+                $postsForCategory = (int) ($seedConfig['posts_per_category'] ?? 2);
                 for ($j = 0; $j < $postsForCategory; $j++) {
-                    $title = ucfirst($faker->sentence(5));
+                    $title = ucfirst($faker->sentence((int) ($seedConfig['post_title_words'] ?? 5)));
                     $postStmt->execute([
-                        'image' => 'https://picsum.photos/seed/' . $faker->uuid() . '/640/360',
+                        'image' => (string) ($seedConfig['post_image_base_url'] ?? 'https://picsum.photos/seed/')
+                            . $faker->uuid()
+                            . '/'
+                            . (int) ($seedConfig['post_image_width'] ?? 640)
+                            . '/'
+                            . (int) ($seedConfig['post_image_height'] ?? 360),
                         'title' => $title,
-                        'slug' => Slugger::slugify($title) . '-' . strtolower($faker->unique()->lexify('??????')),
-                        'description' => $faker->sentence(14),
-                        'content' => $faker->paragraphs(4, true),
-                        'views_count' => $faker->numberBetween(0, 1000),
+                        'slug' => Slugger::slugify($title) . '-' . strtolower(
+                            $faker->unique()->lexify((string) ($seedConfig['post_slug_suffix_mask'] ?? '??????'))
+                        ),
+                        'description' => $faker->sentence((int) ($seedConfig['post_description_words'] ?? 14)),
+                        'content' => $faker->paragraphs((int) ($seedConfig['post_content_paragraphs'] ?? 4), true),
+                        'views_count' => $faker->numberBetween(
+                            (int) ($seedConfig['post_views_min'] ?? 0),
+                            (int) ($seedConfig['post_views_max'] ?? 1000)
+                        ),
                     ]);
 
                     $postId = (int) $pdo->lastInsertId();
