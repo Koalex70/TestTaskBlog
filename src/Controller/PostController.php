@@ -6,17 +6,20 @@ namespace App\Controller;
 
 use App\Http\Response;
 use App\Repository\PostRepository;
+use App\Service\PostViewService;
 use App\Service\SlugResourceResolver;
 
 final class PostController
 {
     private readonly PostRepository $postRepository;
     private readonly SlugResourceResolver $slugResourceResolver;
+    private readonly PostViewService $postViewService;
 
     public function __construct()
     {
         $this->postRepository = new PostRepository();
         $this->slugResourceResolver = new SlugResourceResolver();
+        $this->postViewService = new PostViewService();
     }
 
     /**
@@ -31,6 +34,8 @@ final class PostController
         if ($post instanceof Response) {
             return $post;
         }
+
+        $this->postViewService->registerUniqueView((int) $post['id']);
 
         $content = '<h1>Post page</h1>';
         $content .= '<p>Slug: ' . htmlspecialchars($post['slug'], ENT_QUOTES, 'UTF-8') . '</p>';
