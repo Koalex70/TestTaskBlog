@@ -15,6 +15,7 @@ final class ClearModel
         $pdo->beginTransaction();
         try {
             $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
+            $pdo->exec('TRUNCATE TABLE post_views');
             $pdo->exec('TRUNCATE TABLE post_category');
             $pdo->exec('TRUNCATE TABLE posts');
             $pdo->exec('TRUNCATE TABLE categories');
