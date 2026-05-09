@@ -45,44 +45,49 @@ final class SeedModel
 
             $postStmt = $pdo->prepare(
                 'INSERT INTO posts (image, title, slug, description, content, views_count, created_at, updated_at, published_at)
-                 VALUES (:image, :title, :slug, :description, :content, :views_count, NOW(), NOW(), NOW())'
+                 VALUES (:image, :title, :slug, :description, :content, :views_count, NOW(), NOW(), :published_at)'
             );
             $relationStmt = $pdo->prepare(
                 'INSERT INTO post_category (post_id, category_id) VALUES (:post_id, :category_id)'
             );
 
-            foreach ($categories as $categoryId) {
-                $postsForCategory = (int) ($seedConfig['posts_per_category'] ?? 2);
-                for ($j = 0; $j < $postsForCategory; $j++) {
-                    $title = ucfirst($faker->sentence((int) ($seedConfig['post_title_words'] ?? 5)));
-                    $postStmt->execute([
-                        'image' => (string) ($seedConfig['post_image_base_url'] ?? 'https://picsum.photos/seed/')
-                            . $faker->uuid()
-                            . '/'
-                            . (int) ($seedConfig['post_image_width'] ?? 640)
-                            . '/'
-                            . (int) ($seedConfig['post_image_height'] ?? 360),
-                        'title' => $title,
-                        'slug' => Slugger::slugify($title) . '-' . strtolower(
-                            $faker->unique()->lexify((string) ($seedConfig['post_slug_suffix_mask'] ?? '??????'))
-                        ),
-                        'description' => $faker->sentence((int) ($seedConfig['post_description_words'] ?? 14)),
-                        'content' => $faker->paragraphs((int) ($seedConfig['post_content_paragraphs'] ?? 4), true),
-                        'views_count' => $faker->numberBetween(
-                            (int) ($seedConfig['post_views_min'] ?? 0),
-                            (int) ($seedConfig['post_views_max'] ?? 1000)
-                        ),
-                    ]);
+            $postsPerCategory = (int) ($seedConfig['posts_per_category'] ?? 2);
+            $totalPosts = $categoriesCount * $postsPerCategory;
+            for ($p = 0; $p < $totalPosts; $p++) {
+                $title = ucfirst($faker->sentence((int) ($seedConfig['post_title_words'] ?? 5)));
+                $publishedAt = $faker->dateTimeBetween(
+                    (string) ($seedConfig['post_published_at_since'] ?? '-2 years'),
+                    (string) ($seedConfig['post_published_at_until'] ?? 'now')
+                )->format('Y-m-d H:i:s');
+                $postStmt->execute([
+                    'image' => (string) ($seedConfig['post_image_base_url'] ?? 'https://picsum.photos/seed/')
+                        . $faker->uuid()
+                        . '/'
+                        . (int) ($seedConfig['post_image_width'] ?? 640)
+                        . '/'
+                        . (int) ($seedConfig['post_image_height'] ?? 360),
+                    'title' => $title,
+                    'slug' => Slugger::slugify($title) . '-' . strtolower(
+                        $faker->unique()->lexify((string) ($seedConfig['post_slug_suffix_mask'] ?? '??????'))
+                    ),
+                    'description' => $faker->sentence((int) ($seedConfig['post_description_words'] ?? 14)),
+                    'content' => $faker->paragraphs((int) ($seedConfig['post_content_paragraphs'] ?? 4), true),
+                    'views_count' => $faker->numberBetween(
+                        (int) ($seedConfig['post_views_min'] ?? 0),
+                        (int) ($seedConfig['post_views_max'] ?? 1000)
+                    ),
+                    'published_at' => $publishedAt,
+                ]);
 
-                    $postId = (int) $pdo->lastInsertId();
-                    $postsInserted++;
+                $postId = (int) $pdo->lastInsertId();
+                $postsInserted++;
 
-                    $relationStmt->execute([
-                        'post_id' => $postId,
-                        'category_id' => $categoryId,
-                    ]);
-                    $relationsInserted++;
-                }
+                $categoryId = $faker->randomElement($categories);
+                $relationStmt->execute([
+                    'post_id' => $postId,
+                    'category_id' => $categoryId,
+                ]);
+                $relationsInserted++;
             }
 
             $pdo->commit();
