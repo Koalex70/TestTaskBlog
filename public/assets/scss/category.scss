@@ -1,0 +1,150 @@
+.category-layout {
+  background: #f4f4f4;
+}
+
+.category-page {
+  max-width: 1180px;
+  padding-top: 28px;
+  padding-bottom: 28px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.category-page__intro {
+  margin-bottom: 18px;
+}
+
+.category-page__title {
+  margin: 0 0 6px;
+  font-size: 24px;
+  color: #1f2c34;
+}
+
+.category-page__description {
+  margin: 0;
+  color: #5d686f;
+  font-size: 14px;
+}
+
+.category-page__toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.category-sort {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.category-sort__label {
+  color: #5d686f;
+  font-size: 13px;
+}
+
+.category-sort__link {
+  color: #3a4f5a;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.category-sort__link.is-active {
+  text-decoration: underline;
+  font-weight: 700;
+}
+
+.category-page__count {
+  margin: 0;
+  color: #7f8a91;
+  font-size: 12px;
+}
+
+.category-page__empty {
+  color: #5d686f;
+  font-size: 14px;
+}
+
+.post-card--skeleton {
+  pointer-events: none;
+}
+
+.post-card__skeleton-block {
+  border-radius: 4px;
+  animation: skeleton-loading 1s ease-in-out infinite alternate;
+}
+
+.post-card__skeleton-line {
+  height: 10px;
+  border-radius: 4px;
+  margin-top: 10px;
+  animation: skeleton-loading 1s ease-in-out infinite alternate;
+}
+
+.post-card__skeleton-line--title {
+  width: 80%;
+  height: 12px;
+}
+
+.post-card__skeleton-line--meta {
+  width: 45%;
+}
+
+.post-card__skeleton-line--text {
+  width: 100%;
+}
+
+.pagination {
+  display: flex;
+  gap: 8px;
+  margin-top: 22px;
+  flex-wrap: wrap;
+}
+
+.pagination__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 10px;
+  border: 1px solid #cfd7dc;
+  border-radius: 4px;
+  color: #3a4f5a;
+  background: #fff;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.pagination__link.is-active {
+  background: #224e60;
+  border-color: #224e60;
+  color: #fff;
+}
+
+.pagination__link.is-disabled {
+  opacity: 0.5;
+}
+
+@media (max-width: 640px) {
+  .category-page {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .category-page__toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@keyframes skeleton-loading {
+  from {
+    background: #e3e8eb;
+  }
+  to {
+    background: #f1f4f6;
+  }
+}

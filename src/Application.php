@@ -24,6 +24,7 @@ final class Application
 
         $router->get('/', [$homeController, 'index']);
         $router->get('/category/{slug}', [$categoryController, 'show']);
+        $router->get('/api/category/{slug}', [$categoryController, 'data']);
         $router->get('/post/{slug}', [$postController, 'show']);
         $router->get('/db-tools', [$dbToolsController, 'index']);
         $router->post('/db-tools/migrate', [$dbToolsController, 'migrate']);
