@@ -4,21 +4,28 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Config\Config;
 use App\Http\Response;
+use App\Repository\CategoryRepository;
+use App\Repository\PostRepository;
 use App\Service\TemplateRenderer;
 
 final class HomeController
 {
     private readonly TemplateRenderer $templateRenderer;
+    private readonly CategoryRepository $categoryRepository;
+    private readonly PostRepository $postRepository;
 
     public function __construct()
     {
         $this->templateRenderer = new TemplateRenderer();
+        $this->categoryRepository = new CategoryRepository();
+        $this->postRepository = new PostRepository();
     }
 
     public function index(): Response
     {
-        $sections = $this->buildPlaceholderSections();
+        $sections = $this->buildSectionsFromDatabase();
 
         return new Response(
             $this->templateRenderer->render('home/index.tpl', [
@@ -33,34 +40,35 @@ final class HomeController
     /**
      * @return array<int, array<string, mixed>>
      */
-    private function buildPlaceholderSections(): array
+    private function buildSectionsFromDatabase(): array
     {
-        $posts = [
-            [
-                'title' => 'Lorem ipsum dolor sit amet',
-                'date' => 'July 16, 2026',
-                'excerpt' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis est tempus dolor imperdiet at. Ac suspendisse sit amet facilisis lectus neque sollicitudin.',
-                'image' => 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=80',
-            ],
-            [
-                'title' => 'Lorem ipsum dolor sit amet',
-                'date' => 'July 15, 2026',
-                'excerpt' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis est tempus dolor imperdiet at. Ac suspendisse sit amet facilisis lectus neque sollicitudin.',
-                'image' => 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=900&q=80',
-            ],
-            [
-                'title' => 'Lorem ipsum dolor sit amet',
-                'date' => 'July 14, 2026',
-                'excerpt' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quis est tempus dolor imperdiet at. Ac suspendisse sit amet facilisis lectus neque sollicitudin.',
-                'image' => 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80',
-            ],
-        ];
+        $categories = $this->categoryRepository->findAllWithPosts();
+        $latestLimit = (int) Config::get('blog', 'home_latest_posts_per_category', 3);
 
-        return [
-            ['title' => 'Category 1', 'posts' => $posts],
-            ['title' => 'Category 2', 'posts' => $posts],
-            ['title' => 'Category 3', 'posts' => $posts],
-            ['title' => 'Category 4', 'posts' => $posts],
-        ];
+        $sections = [];
+        foreach ($categories as $category) {
+            $posts = $this->postRepository->findLatestByCategoryId((int) $category['id'], $latestLimit);
+            if ($posts === []) {
+                continue;
+            }
+
+            $mappedPosts = array_map(function (array $post): array {
+                return [
+                    'title' => $post['title'],
+                    'slug' => $post['slug'],
+                    'date' => date('F j, Y', strtotime((string) $post['published_at'])),
+                    'excerpt' => $post['description'] ?? '',
+                    'image' => $post['image'] ?: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80',
+                ];
+            }, $posts);
+
+            $sections[] = [
+                'title' => $category['name'],
+                'slug' => $category['slug'],
+                'posts' => $mappedPosts,
+            ];
+        }
+
+        return $sections;
     }
 }

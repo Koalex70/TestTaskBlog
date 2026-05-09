@@ -119,6 +119,11 @@
   color: #3a4f5a;
 }
 
+.home-empty-state {
+  color: #5d686f;
+  font-size: 14px;
+}
+
 @media (max-width: 1024px) {
   .posts-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));

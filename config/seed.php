@@ -5,7 +5,7 @@ declare(strict_types=1);
 return [
     'locale' => 'en_US',
     'categories_count' => 5,
-    'posts_per_category' => 4,
+    'posts_per_category' => 20,
     'category_name_words' => 2,
     'category_slug_suffix_mask' => '????',
     'category_description_words' => 12,
