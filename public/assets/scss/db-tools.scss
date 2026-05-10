@@ -1,0 +1,39 @@
+.db-tools-container {
+  max-width: 780px;
+}
+
+.db-tools-title {
+  margin-bottom: 8px;
+}
+
+.db-tools-env {
+  margin-bottom: 18px;
+}
+
+.db-tools-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.db-tools-actions button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.db-tools-result {
+  display: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.db-tools-result.is-success {
+  display: block;
+  background: #2d7a2d;
+}
+
+.db-tools-result.is-error {
+  display: block;
+  background: #b33939;
+}
