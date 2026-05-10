@@ -9,6 +9,11 @@
             "App\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
     "require": {
         "smarty/smarty": "^5.8",
         "vlucas/phpdotenv": "^5.6",
