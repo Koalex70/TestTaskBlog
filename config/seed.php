@@ -5,8 +5,9 @@ declare(strict_types=1);
 return [
     'locale' => 'en_US',
     'categories_count' => 5,
-    /** Total posts created = categories_count * posts_per_category; each post is linked to one random category. */
     'posts_per_category' => 20,
+    'post_categories_per_post_min' => 1,
+    'post_categories_per_post_max' => 3,
     'category_name_words' => 2,
     'category_slug_suffix_mask' => '????',
     'category_description_words' => 12,

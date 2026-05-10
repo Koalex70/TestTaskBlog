@@ -82,12 +82,27 @@ final class SeedModel
                 $postId = (int) $pdo->lastInsertId();
                 $postsInserted++;
 
-                $categoryId = $faker->randomElement($categories);
-                $relationStmt->execute([
-                    'post_id' => $postId,
-                    'category_id' => $categoryId,
-                ]);
-                $relationsInserted++;
+                $categoryCount = count($categories);
+                $minLinks = max(1, min(
+                    (int) ($seedConfig['post_categories_per_post_min'] ?? 1),
+                    $categoryCount
+                ));
+                $maxLinks = max(
+                    $minLinks,
+                    min(
+                        (int) ($seedConfig['post_categories_per_post_max'] ?? 3),
+                        $categoryCount
+                    )
+                );
+                $linksForPost = $faker->numberBetween($minLinks, $maxLinks);
+                $categoryIdsForPost = $faker->randomElements($categories, $linksForPost);
+                foreach ($categoryIdsForPost as $categoryId) {
+                    $relationStmt->execute([
+                        'post_id' => $postId,
+                        'category_id' => $categoryId,
+                    ]);
+                    $relationsInserted++;
+                }
             }
 
             $pdo->commit();
