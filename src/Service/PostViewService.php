@@ -17,7 +17,7 @@ final class PostViewService
         $this->postViewRepository = new PostViewRepository();
         $this->postRepository = new PostRepository();
     }
-    
+
     public function registerUniqueView(int $postId): bool
     {
         $ip = $this->getClientIp();
@@ -30,6 +30,22 @@ final class PostViewService
         }
 
         $this->postRepository->incrementViews($postId);
+
+        return true;
+    }
+    
+    public function registerUniqueViewAndSyncPostRow(array &$post): bool
+    {
+        $postId = (int) ($post['id'] ?? 0);
+        if ($postId <= 0) {
+            return false;
+        }
+
+        if (!$this->registerUniqueView($postId)) {
+            return false;
+        }
+
+        $post['views_count'] = (int) ($post['views_count'] ?? 0) + 1;
 
         return true;
     }

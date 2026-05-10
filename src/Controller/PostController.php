@@ -6,20 +6,26 @@ namespace App\Controller;
 
 use App\Http\Response;
 use App\Repository\PostRepository;
+use App\Service\PostPageViewModelFactory;
 use App\Service\PostViewService;
 use App\Service\SlugResourceResolver;
+use App\Service\TemplateRenderer;
 
 final class PostController
 {
     private readonly PostRepository $postRepository;
     private readonly SlugResourceResolver $slugResourceResolver;
     private readonly PostViewService $postViewService;
+    private readonly PostPageViewModelFactory $postPageViewModelFactory;
+    private readonly TemplateRenderer $templateRenderer;
 
     public function __construct()
     {
         $this->postRepository = new PostRepository();
         $this->slugResourceResolver = new SlugResourceResolver();
         $this->postViewService = new PostViewService();
+        $this->postPageViewModelFactory = new PostPageViewModelFactory();
+        $this->templateRenderer = new TemplateRenderer();
     }
 
     /**
@@ -35,11 +41,19 @@ final class PostController
             return $post;
         }
 
-        $this->postViewService->registerUniqueView((int) $post['id']);
+        $this->postViewService->registerUniqueViewAndSyncPostRow($post);
 
-        $content = '<h1>Post page</h1>';
-        $content .= '<p>Slug: ' . htmlspecialchars($post['slug'], ENT_QUOTES, 'UTF-8') . '</p>';
+        $pageData = $this->postPageViewModelFactory->build($post);
 
-        return new Response($content);
+        return new Response(
+            $this->templateRenderer->render('post/show.tpl', array_merge(
+                [
+                    'pageTitle' => $pageData['post']['title'] . ' - Article',
+                    'bodyClass' => 'post-layout',
+                    'extraCss' => ['/assets/css/home.min.css', '/assets/css/post.min.css'],
+                ],
+                $pageData
+            ))
+        );
     }
 }
