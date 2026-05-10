@@ -28,15 +28,16 @@
     }
 
     function buildPostCard(post) {
+        const postHref = '/post/' + escapeHtml(post.slug) + '?from_category=' + escapeHtml(categorySlug);
         return (
             '<article class="post-card">' +
-            '<a href="/post/' + escapeHtml(post.slug) + '" class="post-card__image-link">' +
+            '<a href="' + postHref + '" class="post-card__image-link">' +
             '<img src="' + escapeHtml(post.image) + '" alt="' + escapeHtml(post.title) + '" class="post-card__image">' +
             '</a>' +
-            '<h3 class="post-card__title"><a href="/post/' + escapeHtml(post.slug) + '">' + escapeHtml(post.title) + '</a></h3>' +
+            '<h3 class="post-card__title"><a href="' + postHref + '">' + escapeHtml(post.title) + '</a></h3>' +
             '<p class="post-card__meta">' + escapeHtml(post.date) + ' · ' + post.views_count + ' views</p>' +
             '<p class="post-card__excerpt">' + escapeHtml(post.description || '') + '</p>' +
-            '<a class="post-card__read-link" href="/post/' + escapeHtml(post.slug) + '">Continue Reading</a>' +
+            '<a class="post-card__read-link" href="' + postHref + '">Continue Reading</a>' +
             '</article>'
         );
     }

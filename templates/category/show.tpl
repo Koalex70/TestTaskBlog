@@ -9,6 +9,18 @@
     data-initial-page="{$currentPage|escape}"
     data-per-page="{$perPage|escape}"
 >
+    {if isset($breadcrumbs) && $breadcrumbs|@count > 0}
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+            {foreach $breadcrumbs as $crumb}
+                {if $crumb.url}
+                    <a class="breadcrumbs__link" href="{$crumb.url|escape}">{$crumb.label|escape}</a>
+                {else}
+                    <span class="breadcrumbs__current">{$crumb.label|escape}</span>
+                {/if}
+            {/foreach}
+        </nav>
+    {/if}
+
     <section class="category-page__intro">
         <h1 class="category-page__title">{$category.name|escape}</h1>
         <p class="category-page__description">
@@ -45,17 +57,17 @@
         <div class="posts-grid" id="category-posts-grid">
             {foreach $posts as $post}
                 <article class="post-card">
-                    <a href="/post/{$post.slug|escape}" class="post-card__image-link">
+                    <a href="/post/{$post.slug|escape}?from_category={$category.slug|escape}" class="post-card__image-link">
                         <img src="{$post.image|escape}" alt="{$post.title|escape}" class="post-card__image">
                     </a>
                     <h3 class="post-card__title">
-                        <a href="/post/{$post.slug|escape}">{$post.title|escape}</a>
+                        <a href="/post/{$post.slug|escape}?from_category={$category.slug|escape}">{$post.title|escape}</a>
                     </h3>
                     <p class="post-card__meta">
                         {$post.date|escape} · {$post.views_count} views
                     </p>
                     <p class="post-card__excerpt">{$post.description|escape}</p>
-                    <a class="post-card__read-link" href="/post/{$post.slug|escape}">Continue Reading</a>
+                    <a class="post-card__read-link" href="/post/{$post.slug|escape}?from_category={$category.slug|escape}">Continue Reading</a>
                 </article>
             {/foreach}
         </div>

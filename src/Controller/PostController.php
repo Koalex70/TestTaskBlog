@@ -44,6 +44,22 @@ final class PostController
         $this->postViewService->registerUniqueViewAndSyncPostRow($post);
 
         $pageData = $this->postPageViewModelFactory->build($post);
+        $fromCategorySlug = (string) ($_GET['from_category'] ?? '');
+        $breadcrumbs = [
+            ['label' => 'Blog', 'url' => '/'],
+        ];
+        if ($fromCategorySlug !== '') {
+            foreach ($pageData['categories'] as $category) {
+                if (($category['slug'] ?? '') === $fromCategorySlug) {
+                    $breadcrumbs[] = [
+                        'label' => $category['name'],
+                        'url' => '/category/' . $category['slug'],
+                    ];
+                    break;
+                }
+            }
+        }
+        $breadcrumbs[] = ['label' => $pageData['post']['title'], 'url' => null];
 
         return new Response(
             $this->templateRenderer->render('post/show.tpl', array_merge(
@@ -51,6 +67,8 @@ final class PostController
                     'pageTitle' => $pageData['post']['title'] . ' - Article',
                     'bodyClass' => 'post-layout',
                     'extraCss' => ['/assets/css/home.min.css', '/assets/css/post.min.css'],
+                    'breadcrumbs' => $breadcrumbs,
+                    'fromCategorySlug' => $fromCategorySlug,
                 ],
                 $pageData
             ))

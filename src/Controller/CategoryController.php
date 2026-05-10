@@ -48,6 +48,10 @@ final class CategoryController
                     'extraCss' => ['/assets/css/home.min.css', '/assets/css/category.min.css'],
                     'extraJs' => ['/assets/js/category.js'],
                     'category' => $category,
+                    'breadcrumbs' => [
+                        ['label' => 'Blog', 'url' => '/'],
+                        ['label' => $category['name'], 'url' => null],
+                    ],
                 ],
                 $viewModel
             ))

@@ -2,6 +2,18 @@
 
 {block name="content"}
 <main class="app-container post-page">
+    {if isset($breadcrumbs) && $breadcrumbs|@count > 0}
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+            {foreach $breadcrumbs as $crumb}
+                {if $crumb.url}
+                    <a class="breadcrumbs__link" href="{$crumb.url|escape}">{$crumb.label|escape}</a>
+                {else}
+                    <span class="breadcrumbs__current">{$crumb.label|escape}</span>
+                {/if}
+            {/foreach}
+        </nav>
+    {/if}
+
     <article class="post-article">
         <header class="post-article__header">
             <h1 class="post-article__title">{$post.title|escape}</h1>
@@ -40,15 +52,15 @@
             <div class="posts-grid">
                 {foreach $relatedPosts as $rel}
                     <article class="post-card">
-                        <a href="/post/{$rel.slug|escape}" class="post-card__image-link">
+                        <a href="/post/{$rel.slug|escape}{if isset($fromCategorySlug) && $fromCategorySlug neq ''}?from_category={$fromCategorySlug|escape}{/if}" class="post-card__image-link">
                             <img src="{$rel.image|escape}" alt="{$rel.title|escape}" class="post-card__image" loading="lazy">
                         </a>
                         <h3 class="post-card__title">
-                            <a href="/post/{$rel.slug|escape}">{$rel.title|escape}</a>
+                            <a href="/post/{$rel.slug|escape}{if isset($fromCategorySlug) && $fromCategorySlug neq ''}?from_category={$fromCategorySlug|escape}{/if}">{$rel.title|escape}</a>
                         </h3>
                         <p class="post-card__meta">{$rel.date|escape} · {$rel.views_count} views</p>
                         <p class="post-card__excerpt">{$rel.description|escape}</p>
-                        <a class="post-card__read-link" href="/post/{$rel.slug|escape}">Continue Reading</a>
+                        <a class="post-card__read-link" href="/post/{$rel.slug|escape}{if isset($fromCategorySlug) && $fromCategorySlug neq ''}?from_category={$fromCategorySlug|escape}{/if}">Continue Reading</a>
                     </article>
                 {/foreach}
             </div>
