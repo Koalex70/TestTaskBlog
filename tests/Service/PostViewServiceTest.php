@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Service;
 
+use App\Repository\PostRepository;
 use App\Repository\PostViewRepository;
 use App\Service\PostViewService;
 use Tests\Support\DatabaseTestCase;
@@ -15,7 +16,7 @@ final class PostViewServiceTest extends DatabaseTestCase
         $postId = $this->insertPost('Post A', 'post-a', 0);
         $_SERVER['REMOTE_ADDR'] = '127.0.0.10';
 
-        $service = new PostViewService();
+        $service = new PostViewService(new PostViewRepository(), new PostRepository());
         self::assertTrue($service->registerUniqueView($postId));
         self::assertFalse($service->registerUniqueView($postId));
 
@@ -31,7 +32,7 @@ final class PostViewServiceTest extends DatabaseTestCase
         $postId = $this->insertPost('Post B', 'post-b', 7);
         unset($_SERVER['REMOTE_ADDR']);
 
-        $service = new PostViewService();
+        $service = new PostViewService(new PostViewRepository(), new PostRepository());
         self::assertFalse($service->registerUniqueView($postId));
 
         $views = (int) $this->pdo()->query("SELECT views_count FROM posts WHERE id = {$postId}")->fetchColumn();

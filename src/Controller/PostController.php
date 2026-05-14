@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\NotFoundController;
 use App\Http\Response;
 use App\Repository\PostRepository;
 use App\Service\PostPageViewModelFactory;
@@ -14,21 +13,13 @@ use App\Service\TemplateRenderer;
 
 final class PostController
 {
-    private readonly PostRepository $postRepository;
-    private readonly SlugResourceResolver $slugResourceResolver;
-    private readonly PostViewService $postViewService;
-    private readonly PostPageViewModelFactory $postPageViewModelFactory;
-    private readonly TemplateRenderer $templateRenderer;
-
-    public function __construct()
-    {
-        $this->postRepository = new PostRepository();
-        $this->slugResourceResolver = new SlugResourceResolver(
-            fn (): Response => (new NotFoundController())->show()
-        );
-        $this->postViewService = new PostViewService();
-        $this->postPageViewModelFactory = new PostPageViewModelFactory();
-        $this->templateRenderer = new TemplateRenderer();
+    public function __construct(
+        private readonly PostRepository $postRepository,
+        private readonly SlugResourceResolver $slugResourceResolver,
+        private readonly PostViewService $postViewService,
+        private readonly PostPageViewModelFactory $postPageViewModelFactory,
+        private readonly TemplateRenderer $templateRenderer,
+    ) {
     }
 
     /**

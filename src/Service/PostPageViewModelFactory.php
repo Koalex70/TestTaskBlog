@@ -9,13 +9,10 @@ use App\Support\PostPresentation;
 
 final class PostPageViewModelFactory
 {
-    private readonly PostRepository $postRepository;
-    private readonly PostPresentation $postPresentation;
-
-    public function __construct()
-    {
-        $this->postRepository = new PostRepository();
-        $this->postPresentation = new PostPresentation();
+    public function __construct(
+        private readonly PostRepository $postRepository,
+        private readonly PostPresentation $postPresentation,
+    ) {
     }
 
     public function build(array $post): array

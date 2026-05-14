@@ -9,13 +9,10 @@ use App\Repository\PostViewRepository;
 
 final class PostViewService
 {
-    private readonly PostViewRepository $postViewRepository;
-    private readonly PostRepository $postRepository;
-
-    public function __construct()
-    {
-        $this->postViewRepository = new PostViewRepository();
-        $this->postRepository = new PostRepository();
+    public function __construct(
+        private readonly PostViewRepository $postViewRepository,
+        private readonly PostRepository $postRepository,
+    ) {
     }
 
     public function registerUniqueView(int $postId): bool
@@ -33,7 +30,7 @@ final class PostViewService
 
         return true;
     }
-    
+
     public function registerUniqueViewAndSyncPostRow(array &$post): bool
     {
         $postId = (int) ($post['id'] ?? 0);

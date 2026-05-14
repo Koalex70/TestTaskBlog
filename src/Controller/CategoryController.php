@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Controller\NotFoundController;
 use App\Http\Response;
 use App\Repository\CategoryRepository;
 use App\Service\CategoryPageViewModelFactory;
@@ -13,19 +12,12 @@ use App\Service\TemplateRenderer;
 
 final class CategoryController
 {
-    private readonly CategoryRepository $categoryRepository;
-    private readonly CategoryPageViewModelFactory $viewModelFactory;
-    private readonly SlugResourceResolver $slugResourceResolver;
-    private readonly TemplateRenderer $templateRenderer;
-
-    public function __construct()
-    {
-        $this->categoryRepository = new CategoryRepository();
-        $this->viewModelFactory = new CategoryPageViewModelFactory();
-        $this->slugResourceResolver = new SlugResourceResolver(
-            fn (): Response => (new NotFoundController())->show()
-        );
-        $this->templateRenderer = new TemplateRenderer();
+    public function __construct(
+        private readonly CategoryRepository $categoryRepository,
+        private readonly CategoryPageViewModelFactory $viewModelFactory,
+        private readonly SlugResourceResolver $slugResourceResolver,
+        private readonly TemplateRenderer $templateRenderer,
+    ) {
     }
 
     /**
