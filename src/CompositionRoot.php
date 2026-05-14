@@ -9,6 +9,7 @@ use App\Controller\DbToolsController;
 use App\Controller\HomeController;
 use App\Controller\NotFoundController;
 use App\Controller\PostController;
+use App\Database\Connection;
 use App\Http\Router;
 use App\Model\DbTools\ClearModel;
 use App\Model\DbTools\MigrationModel;
@@ -30,10 +31,11 @@ final class CompositionRoot
 {
     public function registerRoutes(Router $router): void
     {
+        $pdo = Connection::get();
         $templateRenderer = new TemplateRenderer();
         $postPresentation = new PostPresentation();
-        $categoryRepository = new CategoryRepository();
-        $postRepository = new PostRepository();
+        $categoryRepository = new CategoryRepository($pdo);
+        $postRepository = new PostRepository($pdo);
 
         $notFoundController = new NotFoundController($templateRenderer);
         $slugResourceResolver = new SlugResourceResolver(
@@ -63,7 +65,7 @@ final class CompositionRoot
             $postPresentation
         );
         $postViewService = new PostViewService(
-            new PostViewRepository(),
+            new PostViewRepository($pdo),
             $postRepository
         );
         $postController = new PostController(

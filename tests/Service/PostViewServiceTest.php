@@ -16,14 +16,15 @@ final class PostViewServiceTest extends DatabaseTestCase
         $postId = $this->insertPost('Post A', 'post-a', 0);
         $_SERVER['REMOTE_ADDR'] = '127.0.0.10';
 
-        $service = new PostViewService(new PostViewRepository(), new PostRepository());
+        $pdo = $this->pdo();
+        $service = new PostViewService(new PostViewRepository($pdo), new PostRepository($pdo));
         self::assertTrue($service->registerUniqueView($postId));
         self::assertFalse($service->registerUniqueView($postId));
 
         $views = (int) $this->pdo()->query("SELECT views_count FROM posts WHERE id = {$postId}")->fetchColumn();
         self::assertSame(1, $views);
 
-        $repo = new PostViewRepository();
+        $repo = new PostViewRepository($pdo);
         self::assertTrue($repo->hasView($postId, '127.0.0.10'));
     }
 
@@ -32,7 +33,8 @@ final class PostViewServiceTest extends DatabaseTestCase
         $postId = $this->insertPost('Post B', 'post-b', 7);
         unset($_SERVER['REMOTE_ADDR']);
 
-        $service = new PostViewService(new PostViewRepository(), new PostRepository());
+        $pdo = $this->pdo();
+        $service = new PostViewService(new PostViewRepository($pdo), new PostRepository($pdo));
         self::assertFalse($service->registerUniqueView($postId));
 
         $views = (int) $this->pdo()->query("SELECT views_count FROM posts WHERE id = {$postId}")->fetchColumn();
