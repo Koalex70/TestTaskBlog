@@ -4,26 +4,29 @@ declare(strict_types=1);
 
 namespace App\Model\DbTools;
 
-use App\Database\Connection;
+use PDO;
 
 final class ClearModel
 {
+    public function __construct(
+        private readonly PDO $pdo,
+    ) {
+    }
+
     public function clearData(): array
     {
-        $pdo = Connection::get();
-
-        $pdo->beginTransaction();
+        $this->pdo->beginTransaction();
         try {
-            $pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
-            $pdo->exec('TRUNCATE TABLE post_views');
-            $pdo->exec('TRUNCATE TABLE post_category');
-            $pdo->exec('TRUNCATE TABLE posts');
-            $pdo->exec('TRUNCATE TABLE categories');
-            $pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
-            $pdo->commit();
+            $this->pdo->exec('SET FOREIGN_KEY_CHECKS = 0');
+            $this->pdo->exec('TRUNCATE TABLE post_views');
+            $this->pdo->exec('TRUNCATE TABLE post_category');
+            $this->pdo->exec('TRUNCATE TABLE posts');
+            $this->pdo->exec('TRUNCATE TABLE categories');
+            $this->pdo->exec('SET FOREIGN_KEY_CHECKS = 1');
+            $this->pdo->commit();
         } catch (\Throwable $e) {
-            if ($pdo->inTransaction()) {
-                $pdo->rollBack();
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
             }
             throw $e;
         }

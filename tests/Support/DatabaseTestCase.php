@@ -14,7 +14,7 @@ abstract class DatabaseTestCase extends TestCase
 {
     public static function setUpBeforeClass(): void
     {
-        (new MigrationModel())->runMigrations();
+        (new MigrationModel(Connection::get()))->runMigrations();
     }
 
     protected function setUp(): void

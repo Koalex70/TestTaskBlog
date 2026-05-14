@@ -80,9 +80,9 @@ final class CompositionRoot
             new CsrfTokenManager(),
             new EnvironmentService(),
             $templateRenderer,
-            new MigrationModel(),
-            new SeedModel(),
-            new ClearModel()
+            new MigrationModel($pdo),
+            new SeedModel($pdo),
+            new ClearModel($pdo)
         );
 
         $router->get('/', [$homeController, 'index']);

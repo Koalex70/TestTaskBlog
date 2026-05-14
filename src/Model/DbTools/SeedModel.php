@@ -5,28 +5,31 @@ declare(strict_types=1);
 namespace App\Model\DbTools;
 
 use App\Config\Config;
-use App\Database\Connection;
 use App\Support\Slugger;
 use Faker\Factory;
 use PDO;
 
 final class SeedModel
 {
+    public function __construct(
+        private readonly PDO $pdo,
+    ) {
+    }
+
     public function runSeed(?int $categoriesCount = null): array
     {
         $seedConfig = Config::namespace('seed');
         $categoriesCount ??= (int) ($seedConfig['categories_count'] ?? 5);
 
-        $pdo = Connection::get();
         $faker = Factory::create((string) ($seedConfig['locale'] ?? 'en_US'));
 
         $categories = [];
         $postsInserted = 0;
         $relationsInserted = 0;
 
-        $pdo->beginTransaction();
+        $this->pdo->beginTransaction();
         try {
-            $categoryStmt = $pdo->prepare(
+            $categoryStmt = $this->pdo->prepare(
                 'INSERT INTO categories (name, slug, description, created_at, updated_at)
                  VALUES (:name, :slug, :description, NOW(), NOW())'
             );
@@ -40,14 +43,14 @@ final class SeedModel
                     ),
                     'description' => $faker->sentence((int) ($seedConfig['category_description_words'] ?? 12)),
                 ]);
-                $categories[] = (int) $pdo->lastInsertId();
+                $categories[] = (int) $this->pdo->lastInsertId();
             }
 
-            $postStmt = $pdo->prepare(
+            $postStmt = $this->pdo->prepare(
                 'INSERT INTO posts (image, title, slug, description, content, views_count, created_at, updated_at, published_at)
                  VALUES (:image, :title, :slug, :description, :content, :views_count, NOW(), NOW(), :published_at)'
             );
-            $relationStmt = $pdo->prepare(
+            $relationStmt = $this->pdo->prepare(
                 'INSERT INTO post_category (post_id, category_id) VALUES (:post_id, :category_id)'
             );
 
@@ -79,7 +82,7 @@ final class SeedModel
                     'published_at' => $publishedAt,
                 ]);
 
-                $postId = (int) $pdo->lastInsertId();
+                $postId = (int) $this->pdo->lastInsertId();
                 $postsInserted++;
 
                 $categoryCount = count($categories);
@@ -105,10 +108,10 @@ final class SeedModel
                 }
             }
 
-            $pdo->commit();
+            $this->pdo->commit();
         } catch (\Throwable $e) {
-            if ($pdo->inTransaction()) {
-                $pdo->rollBack();
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
             }
             throw $e;
         }
