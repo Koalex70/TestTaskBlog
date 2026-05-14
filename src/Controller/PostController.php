@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\NotFoundController;
 use App\Http\Response;
 use App\Repository\PostRepository;
 use App\Service\PostPageViewModelFactory;
@@ -22,7 +23,9 @@ final class PostController
     public function __construct()
     {
         $this->postRepository = new PostRepository();
-        $this->slugResourceResolver = new SlugResourceResolver();
+        $this->slugResourceResolver = new SlugResourceResolver(
+            fn (): Response => (new NotFoundController())->show()
+        );
         $this->postViewService = new PostViewService();
         $this->postPageViewModelFactory = new PostPageViewModelFactory();
         $this->templateRenderer = new TemplateRenderer();

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Controller\NotFoundController;
 use App\Http\Response;
 use App\Repository\CategoryRepository;
 use App\Service\CategoryPageViewModelFactory;
@@ -21,7 +22,9 @@ final class CategoryController
     {
         $this->categoryRepository = new CategoryRepository();
         $this->viewModelFactory = new CategoryPageViewModelFactory();
-        $this->slugResourceResolver = new SlugResourceResolver();
+        $this->slugResourceResolver = new SlugResourceResolver(
+            fn (): Response => (new NotFoundController())->show()
+        );
         $this->templateRenderer = new TemplateRenderer();
     }
 
