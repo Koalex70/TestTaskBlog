@@ -12,17 +12,12 @@ use App\Service\TemplateRenderer;
 
 final class CategoryController
 {
-    private readonly CategoryRepository $categoryRepository;
-    private readonly CategoryPageViewModelFactory $viewModelFactory;
-    private readonly SlugResourceResolver $slugResourceResolver;
-    private readonly TemplateRenderer $templateRenderer;
-
-    public function __construct()
-    {
-        $this->categoryRepository = new CategoryRepository();
-        $this->viewModelFactory = new CategoryPageViewModelFactory();
-        $this->slugResourceResolver = new SlugResourceResolver();
-        $this->templateRenderer = new TemplateRenderer();
+    public function __construct(
+        private readonly CategoryRepository $categoryRepository,
+        private readonly CategoryPageViewModelFactory $viewModelFactory,
+        private readonly SlugResourceResolver $slugResourceResolver,
+        private readonly TemplateRenderer $templateRenderer,
+    ) {
     }
 
     /**

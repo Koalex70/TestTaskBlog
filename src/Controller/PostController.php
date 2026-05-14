@@ -13,19 +13,13 @@ use App\Service\TemplateRenderer;
 
 final class PostController
 {
-    private readonly PostRepository $postRepository;
-    private readonly SlugResourceResolver $slugResourceResolver;
-    private readonly PostViewService $postViewService;
-    private readonly PostPageViewModelFactory $postPageViewModelFactory;
-    private readonly TemplateRenderer $templateRenderer;
-
-    public function __construct()
-    {
-        $this->postRepository = new PostRepository();
-        $this->slugResourceResolver = new SlugResourceResolver();
-        $this->postViewService = new PostViewService();
-        $this->postPageViewModelFactory = new PostPageViewModelFactory();
-        $this->templateRenderer = new TemplateRenderer();
+    public function __construct(
+        private readonly PostRepository $postRepository,
+        private readonly SlugResourceResolver $slugResourceResolver,
+        private readonly PostViewService $postViewService,
+        private readonly PostPageViewModelFactory $postPageViewModelFactory,
+        private readonly TemplateRenderer $templateRenderer,
+    ) {
     }
 
     /**

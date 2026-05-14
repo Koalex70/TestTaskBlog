@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Database\Connection;
 use PDO;
 
 final class PostViewRepository
 {
-    private readonly PDO $pdo;
-
-    public function __construct()
-    {
-        $this->pdo = Connection::get();
+    public function __construct(
+        private readonly PDO $pdo,
+    ) {
     }
 
     public function hasView(int $postId, string $viewerIp): bool

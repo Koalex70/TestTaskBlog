@@ -5,16 +5,13 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Config\Config;
-use App\Database\Connection;
 use PDO;
 
 final class PostRepository
 {
-    private readonly PDO $pdo;
-
-    public function __construct()
-    {
-        $this->pdo = Connection::get();
+    public function __construct(
+        private readonly PDO $pdo,
+    ) {
     }
 
     /**

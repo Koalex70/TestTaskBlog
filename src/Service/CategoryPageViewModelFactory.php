@@ -6,14 +6,14 @@ namespace App\Service;
 
 use App\Config\Config;
 use App\Repository\PostRepository;
+use App\Support\PostPresentation;
 
 final class CategoryPageViewModelFactory
 {
-    private readonly PostRepository $postRepository;
-
-    public function __construct()
-    {
-        $this->postRepository = new PostRepository();
+    public function __construct(
+        private readonly PostRepository $postRepository,
+        private readonly PostPresentation $postPresentation,
+    ) {
     }
 
     /**
@@ -73,8 +73,8 @@ final class CategoryPageViewModelFactory
             return [
                 'title' => $post['title'],
                 'slug' => $post['slug'],
-                'image' => $post['image'] ?: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80',
-                'date' => date('F j, Y', strtotime((string) $post['published_at'])),
+                'image' => $this->postPresentation->cardImageUrl((string) ($post['image'] ?? '')),
+                'date' => $this->postPresentation->publishedLabel((string) ($post['published_at'] ?? '')),
                 'description' => $post['description'] ?? '',
                 'views_count' => (int) $post['views_count'],
             ];

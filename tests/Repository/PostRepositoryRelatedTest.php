@@ -32,7 +32,7 @@ final class PostRepositoryRelatedTest extends DatabaseTestCase
         $noise = $this->insertPost('Noise', 'noise-post', 999, '2026-02-01 10:00:00');
         $this->linkPostToCategory($noise, $cat3);
 
-        $rows = (new PostRepository())->findRelatedByPostId($current, 3);
+        $rows = (new PostRepository($this->pdo()))->findRelatedByPostId($current, 3);
         $slugs = array_map(static fn (array $r): string => (string) $r['slug'], $rows);
 
         self::assertSame(['best-match', 'high-views', 'mid-views'], $slugs);

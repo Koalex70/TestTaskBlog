@@ -9,11 +9,9 @@ use App\Service\TemplateRenderer;
 
 final class NotFoundController
 {
-    private readonly TemplateRenderer $templateRenderer;
-
-    public function __construct()
-    {
-        $this->templateRenderer = new TemplateRenderer();
+    public function __construct(
+        private readonly TemplateRenderer $templateRenderer,
+    ) {
     }
 
     public function show(): Response

@@ -14,21 +14,14 @@ use App\Service\TemplateRenderer;
 
 final class DbToolsController
 {
-    private readonly CsrfTokenManager $csrfTokenManager;
-    private readonly EnvironmentService $environmentService;
-    private readonly TemplateRenderer $templateRenderer;
-    private readonly MigrationModel $migrationModel;
-    private readonly SeedModel $seedModel;
-    private readonly ClearModel $clearModel;
-
-    public function __construct()
-    {
-        $this->csrfTokenManager = new CsrfTokenManager();
-        $this->environmentService = new EnvironmentService();
-        $this->templateRenderer = new TemplateRenderer();
-        $this->migrationModel = new MigrationModel();
-        $this->seedModel = new SeedModel();
-        $this->clearModel = new ClearModel();
+    public function __construct(
+        private readonly CsrfTokenManager $csrfTokenManager,
+        private readonly EnvironmentService $environmentService,
+        private readonly TemplateRenderer $templateRenderer,
+        private readonly MigrationModel $migrationModel,
+        private readonly SeedModel $seedModel,
+        private readonly ClearModel $clearModel,
+    ) {
     }
 
     public function index(): Response
@@ -143,5 +136,4 @@ final class DbToolsController
             'message' => $message,
         ], $statusCode);
     }
-
 }

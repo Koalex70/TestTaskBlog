@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Controller\NotFoundController;
 use App\Http\Response;
+use Closure;
 
 final class SlugResourceResolver
 {
+    public function __construct(
+        private readonly Closure $htmlNotFoundResponseFactory
+    ) {
+    }
+
     /**
      * @param array<string, string> $params
      * @param callable(string): ?array<string, mixed> $finder
-     * @param null|callable(): Response $notFoundResponseFactory
+     * @param null|callable(): Response $notFoundResponseFactory Overrides HTML 404 when set
      *
      * @return array<string, mixed>|Response
      */
@@ -29,7 +34,7 @@ final class SlugResourceResolver
                 return $notFoundResponseFactory();
             }
 
-            return (new NotFoundController())->show();
+            return ($this->htmlNotFoundResponseFactory)();
         }
 
         return $resource;
